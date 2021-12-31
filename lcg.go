@@ -41,13 +41,7 @@ func NewLCG(m int) (*LCG, error) {
 	//  m and c are relatively prime,
 	//  a − 1 is divisible by all prime factors of m
 	//  a − 1 is divisible by 4 if m is divisible by 4
-	mpf := map[int]struct{}{}
-	for _, p := range PrimeFactors(m) {
-		mpf[p] = struct{}{}
-	}
-
 	tries := 10
-outer:
 	for {
 		// try to find a c that is relatively prime with m
 		c := rand.Intn(m-2) + 1
@@ -56,15 +50,14 @@ outer:
 		// the middle of m.  We only try a few times though so we can at least generate some sequence
 		if (c > m-5 || c <= 5) && tries > 0 {
 			tries--
-			continue outer
+			continue
 		}
-		for _, p := range PrimeFactors(c) {
-			if _, ok := mpf[p]; ok {
-				continue outer
-			}
+		if GCD(c, m) != 1 {
+			continue
 		}
 
 		var a int
+		mpf := PrimeFactors(m)
 	inner:
 		for {
 			a = rand.Intn(m-1) + 1
@@ -72,7 +65,8 @@ outer:
 				tries--
 				continue inner
 			}
-			for p := range mpf {
+			
+			for _, p := range mpf {
 				if (a-1)%p != 0 {
 					continue inner
 				}

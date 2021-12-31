@@ -55,3 +55,13 @@ func PrimeFactors(n int) []int {
 	}
 	return factors
 }
+
+// GCD is an implementation of Euclid's GCD algorithm
+func GCD(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
