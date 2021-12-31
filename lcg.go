@@ -1,7 +1,6 @@
 package lcg
 
 import (
-	"fmt"
 	"math/rand"
 )
 
@@ -24,7 +23,12 @@ type LCG struct {
 // NewLCG constructs a new LCG with the range [0,m)
 func NewLCG(m int) (*LCG, error) {
 	if m <= 2 {
-		return nil, fmt.Errorf("m must be > 2")
+		return &LCG{
+			m: m,
+			x: -1,
+			c: 1,
+			a: 1,
+		}, nil
 	}
 	lcg := &LCG{
 		m: m,
@@ -48,7 +52,7 @@ outer:
 		// try to find a c that is relatively prime with m
 		c := rand.Intn(m-2) + 1
 
-		// This isn't part of the algorith, but the sequences seem to be 'more random looking' if we keep c towards
+		// This isn't part of the algorithm, but the sequences seem to be 'more random looking' if we keep c towards
 		// the middle of m.  We only try a few times though so we can at least generate some sequence
 		if (c > m-5 || c <= 5) && tries > 0 {
 			tries--
