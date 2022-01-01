@@ -50,5 +50,5 @@ func ExampleLCG() {
 		fmt.Printf("%d ", g.Next())
 	}
 	fmt.Println()
-	// Output: 7 14 6 13 5 12 4 11 3 10 2 9 1 8 0
+	// Output: 8 1 9 2 10 3 11 4 12 5 13 6 14 7 0
 }

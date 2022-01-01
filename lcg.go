@@ -20,8 +20,15 @@ type LCG struct {
 	c  int // increment
 }
 
-// NewLCG constructs a new LCG with the range [0,m)
+// NewLCG constructs a new LCG with the range [0,m) using a fixed seed random source.
 func NewLCG(m int) (*LCG, error) {
+	rs := rand.NewSource(42)
+	return NewLCGWithSource(m, rs)
+}
+
+// NewLCG constructs a new LCG with the range [0,m) using a given random source for constructing the LCG.
+func NewLCGWithSource(m int, rs rand.Source) (*LCG, error) {
+	rng := rand.New(rs)
 	if m <= 2 {
 		return &LCG{
 			m: m,
@@ -44,7 +51,7 @@ func NewLCG(m int) (*LCG, error) {
 	tries := 10
 	for {
 		// try to find a c that is relatively prime with m
-		c := rand.Intn(m-2) + 1
+		c := rng.Intn(m-2) + 1
 
 		// This isn't part of the algorithm, but the sequences seem to be 'more random looking' if we keep c towards
 		// the middle of m.  We only try a few times though so we can at least generate some sequence
@@ -60,12 +67,12 @@ func NewLCG(m int) (*LCG, error) {
 		mpf := PrimeFactors(m)
 	inner:
 		for {
-			a = rand.Intn(m-1) + 1
+			a = rng.Intn(m-1) + 1
 			if a == 1 && tries > 0 {
 				tries--
 				continue inner
 			}
-			
+
 			for _, p := range mpf {
 				if (a-1)%p != 0 {
 					continue inner
